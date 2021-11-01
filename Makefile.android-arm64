@@ -1,0 +1,21 @@
+CXX    := ~/Android/Sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++
+CC     := ~/Android/Sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
+CFLAGS := -target aarch64-linux-android21 -g -Wall -fPIC -I~/Android/android-build/include -L~/Android/local/lib64
+NAME=vocoder_plugin.android.arm64
+OBJECTS = ambe3600x2400.o ambe3600x2450.o ecc.o mbelib.o vocoder_plugin.o
+
+.PHONY: all
+all:		$(NAME)
+
+$(NAME):	$(OBJECTS)
+		$(CXX) $(CFLAGS) -shared -o $(NAME) $(OBJECTS) -limbe_vocoder
+
+-include $(OBJECTS:.o=.d)
+
+%.o: %.cpp
+		$(CXX) $(CFLAGS) -c -o $@ $<
+
+.PHONY: clean
+clean:
+		$(RM) $(NAME) *.o *.bak *~
+
